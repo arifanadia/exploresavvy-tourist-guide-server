@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const cors = require('cors');
 const port = process.env.PORT || 5000
@@ -36,10 +36,26 @@ async function run() {
 
         // packages api
 
-        app.get('/packages',async(req,res)=>{
+        app.get('/packages', async (req, res) => {
             const result = await packagesCollection.find().toArray()
             res.send(result)
         })
+
+        app.get('/packages-details/:id', async (req, res) => {
+            const id = req.params.id
+            console.log(id);
+            const query = { _id: new ObjectId(id) }
+            const result = await packagesCollection.findOne(query);
+            res.send(result)
+        })
+
+        // tourGuide api
+
+        app.get('/tourGuides', async (req, res) => {
+            const result = await tourGuideCollection.find().toArray()
+            res.send(result)
+        })
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
